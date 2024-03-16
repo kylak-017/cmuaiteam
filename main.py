@@ -9,7 +9,7 @@ import re
 import numpy as np
 import time
 import pandas
-import helpers.pickle_helpers as ph
+from helpers import pickle_helper as ph
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 
 #Using PANDAS, importing the pickle data file
-data = ph.load_from_pickle(directory = "data/merged_training.pkl") 
+data = ph.load_from_pickle(directory = "data/EmoryNLP.pkl") 
 #data2 = ph.load_from_pickle(directory = "")
 #plotting specific array from pickle file (pickle file has a collection of all the tensors saved in arrays)
 data.emotions.value_counts().plot.bar()
