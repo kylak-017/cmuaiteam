@@ -8,8 +8,9 @@ from torch.utils.data import Dataset, DataLoader
 import re
 import numpy as np
 import time
-import pandas
-from helpers import pickle_helper as ph
+import pickle
+import pandas as pd
+from helpers import pickle_helpers as ph
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
@@ -18,10 +19,49 @@ import matplotlib.pyplot as plt
 
 
 #Using PANDAS, importing the pickle data file
-data = ph.load_from_pickle(directory = "data/EmoryNLP.pkl") 
+
+data = pd.read_pickle("data/EmoryNLP.pkl")
+print(data)
+
+with open('data/EmoryNLP.pkl', 'rb') as f:
+    data = pickle.load(f)
+
+collectList = {}
+#{sentence, annotation}
+#ex) {"hello", 3}
+
+emotionDictionary = data[0]
+vocabDictionary = data[2]
+
+for i in range(len(emotionDictionary)):
+    keysE = list(emotionDictionary.keys()) #has a list of keys from the diciontary, for example: 4_4_1, 4_4_2...
+    keysV = list(vocabDictionary.keys()) 
+    emotionList = emotionDictionary[keysE[i]] # has a list of values inside each key, the one-hot encoding vecotrs
+    vocabList = vocabDictionary[keysE[i]]
+    for j in range(len(emotionList)): #for each emotion of each sentence
+        collectList[vocabList[j]] = emotionList[j]
+
+
+'''
+      for k in range (0,10): #getting value
+            if(emotionList[j][k] == 1):
+            '''
+
+
+print(collectList)
+
+
+
+
+
+
+
+    
+
+
 #data2 = ph.load_from_pickle(directory = "")
 #plotting specific array from pickle file (pickle file has a collection of all the tensors saved in arrays)
-data.emotions.value_counts().plot.bar()
+#data.emotions.value_counts().plot.bar()
 #returns the first 10 rows of the dataframe, which is the tabular data storing the actual data
 data.head(10)
 
