@@ -5,6 +5,9 @@ import torch.optim
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from torch.utils.data import Dataset, DataLoader
 
+
+
+
 import re
 import numpy as np
 import time
@@ -47,23 +50,19 @@ for i in range(len(emotionDictionary)):
             if(emotionList[j][k] == 1):
             '''
 
+collectDataFrame = pd.DataFrame.from_dict(collectList, orient='index')
+#collectDataFrame.0.value_counts().plot.bar()
 
-print(collectList)
-
-
-
-
-
-
-
-    
+'''
+for s in self.sentences:
+        # update with individual tokens
+        self.vocab.update(s.split(' '))
+''' 
 
 
-#data2 = ph.load_from_pickle(directory = "")
 #plotting specific array from pickle file (pickle file has a collection of all the tensors saved in arrays)
 #data.emotions.value_counts().plot.bar()
 #returns the first 10 rows of the dataframe, which is the tabular data storing the actual data
-data.head(10)
 
 #data_merged = data + data2
 
@@ -73,12 +72,16 @@ data.head(10)
 #Tokens: pretty much words, individual smaller units of the natural language data set
 # retain only text that contain less that 70 tokens to avoid too much padding
 # The data dictionary uses token_size array as a key, applies a function lambda(miscellanous fucntions with unlim parameters and 1 argument)
-data["token_size"] = data["text"].apply(lambda x: len(x.split(' ')))
-data = data.loc[data['token_size'] < 70].copy()
+
+
+collectDataFrame["token_size"] = collectDataFrame.index.tolist()
+collectDataFrame["token_size"] = collectDataFrame["token_size"].apply(lambda x: len(x.split(' ')))
+collectDataFrame = collectDataFrame.loc[collectDataFrame['token_size'] < 70].copy() #copies tokens that have a token size that is less than 70.
+
 
 # Sampling: selecting specific subsets of datasets
 #n=50000 --> the 50000th row of the dataset
-data = data.sample(n=50000)
+collectDataFrame = collectDataFrame.sample(n=len(collectDataFrame))
 
 #Constructing Vocabulary and Index-Word Mapping
 class ConstructVocab():
@@ -90,11 +93,13 @@ class ConstructVocab():
         self.vocab = set()
         self.create_index()
     
+    print( collectDataFrame.index[0].split(' ')) 
+
 
     def create_index(self): #self parameter utilizes variables in the class, all of the instance variables
-        for s in self.sentences:
+        for i in range(len(collectDataFrame.index)):
             # update with individual tokens
-            self.vocab.update(s.split(' '))
+            self.vocab.update(collectDataFrame.index[i].split(' '))
             
         # sort the vocab
         self.vocab = sorted(self.vocab)
